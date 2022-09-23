@@ -1,10 +1,3 @@
-/*
-Created by: Henrique Emanoel Viana
-Githu: https://github.com/hviana
-Page: https://sites.google.com/site/henriqueemanoelviana
-cel: +55 (41) 99999-4664
-*/
-
 export type Params = {
   [key: string]: string;
 };

@@ -1,10 +1,3 @@
-/*
-Created by: Henrique Emanoel Viana
-Githu: https://github.com/hviana
-Page: https://sites.google.com/site/henriqueemanoelviana
-cel: +55 (41) 99999-4664
-*/
-
 import { Context, NextFunc, ProcessorFunc } from "../server.ts";
 const reqParsers: { [key: string]: ProcessorFunc } = {};
 const resParsers: { [key: string]: ProcessorFunc } = {
