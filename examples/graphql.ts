@@ -10,7 +10,7 @@ const typeDefs = gql`
   }
 `
 
-const resolvers = { Query: { hello: () => `Hello World!` } };
+const resolvers = { Query: { hello: (_root: undefined, _args: unknown, ctx: { request: Request }, info: { fieldName: string }) => `Hello World! ${JSON.stringify(ctx.request)}. You have called ${info.fieldName}` } };
 const schema = makeExecutableSchema({ resolvers, typeDefs });
 const server = new Server();
 server.post(
