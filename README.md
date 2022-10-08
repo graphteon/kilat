@@ -6,6 +6,7 @@
 
 - [Example](#example)
   - [Defining routes](#defining-routes)
+  - [GraphQL support](#graphql-support)
   - [POST read and return JSON](#post-read-and-return-json)
   - [GET return HTML](#get-return-html)
   - [Get URL params](#get-url-params)
@@ -62,10 +63,40 @@ Optional Parameters (/:title?, /books/:title?, /books/:genre/:title?)
 
 Wildcards (\*, /books/\*, /books/:genre/\*)
 
+### GraphQL support
+
+```typescript
+import { Server } from "https://deno.land/x/kilat/mod.ts";
+import { makeExecutableSchema, GraphQLHTTP, gql } from 'https://deno.land/x/kilat/middlewares/graphql/mod.ts'
+
+// TEST curl -X POST localhost:3000/graphql -d '{ "query": "{ hello }" }'
+
+const port = 3000;
+const typeDefs = gql`
+  type Query {
+    hello: String
+  }
+`
+
+const resolvers = { Query: { hello: () => `Hello World!` } };
+const schema = makeExecutableSchema({ resolvers, typeDefs });
+const server = new Server();
+server.post(
+    "/graphql",
+    async (ctx: any, next: any) => {
+      const resp = await GraphQLHTTP<Request>({ schema, context: (request) => ({ request }), graphiql: true })(ctx.req);
+      ctx.res = resp;
+      await next();
+    },
+);
+console.log(`server listen to http://localhost:${port}`);
+await server.listen({ port });
+```
+
 ### POST read and return JSON
 
 ```typescript
-import { req, res, Server } from "kilat/mod.ts";
+import { req, res, Server } from "https://deno.land/x/kilat/mod.ts";
 const server = new Server();
 server.post(
   "/example_json",
@@ -126,7 +157,7 @@ import {
   getCookies,
   Server,
   setCookie,
-} from "kilat/mod.ts";
+} from "https://deno.land/x/kilat/mod.ts";
 server.get(
   "/cookies",
   async (ctx: any, next: any) => {
