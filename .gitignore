@@ -6,3 +6,4 @@ log.txt
 uploads
 my_uploads
 temp_uploads
+*.sqlite
