@@ -1,24 +1,23 @@
 import { Server } from "https://deno.land/x/kilat/mod.ts";
-import { makeExecutableSchema, GraphQLHTTP, gql } from 'https://deno.land/x/kilat/middlewares/graphql/mod.ts'
+import { buildSchema, GraphQLHTTP } from 'https://deno.land/x/kilatgraphql@16.6.0/mod.ts'
 
 // TEST curl -X POST localhost:3000/graphql -d '{ "query": "{ hello }" }'
 
 const port = 3000;
-const typeDefs = gql`
+const schema = buildSchema(`
   type Query {
     hello: String
   }
-`
+`)
 
-const resolvers = { Query: { hello: (_root: undefined, _args: unknown, ctx: { request: Request }, info: { fieldName: string }) => `Hello World! ${JSON.stringify(ctx.request)}. You have called ${info.fieldName}` } };
-const schema = makeExecutableSchema({ resolvers, typeDefs });
+const rootValue = { hello: () => `Hello World!` } ;
 const server = new Server();
 server.post(
     "/graphql",
     async (ctx: any, next: any) => {
-      const resp = await GraphQLHTTP<Request>({ schema, context: (request) => ({ request }), graphiql: true })(ctx.req);
-      ctx.res = resp;
-      await next();
+        const resp = await GraphQLHTTP<Request>({ schema, rootValue, context: (request) => ({ request }) })(ctx.req);
+        ctx.res = resp;
+        await next();
     },
 );
 console.log(`server listen to http://localhost:${port}`);
